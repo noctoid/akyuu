@@ -2,6 +2,8 @@ import uuid
 from typing import List, Any
 from elasticsearch import Elasticsearch, exceptions
 
+from akyuu.model.base import Base
+
 GEN_UUID = uuid.uuid4
 es_adapter = Elasticsearch()
 
@@ -12,9 +14,10 @@ class ElasticDriver:
         except exceptions.NotFoundError:
             raise exceptions.NotFoundError
 
-    async def create(self, index, id, *, document):
-        await self.execute_command(es_adapter.index, index=index, id=id, document=document)
-        return id
+    async def create(self, index,*, document: dict):
+        print(document)
+        await self.execute_command(es_adapter.index, index=index, id=document['id'], document=document)
+        return document['id']
 
     async def get(self, index, id):
         return await self.execute_command(es_adapter.get, index=index, id=id)

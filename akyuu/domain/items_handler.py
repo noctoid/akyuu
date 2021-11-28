@@ -14,8 +14,11 @@ class ItemsHandler:
     INDEX_NAME = "items_"
 
     async def create(self, item: Item) -> HttpReponseBody:
-        es_doc = item.to_dict()
         item_id = await es_adapter.create(
-            index=self.INDEX_NAME, id=item.id, document=es_doc)
+            index=self.INDEX_NAME, document=item.to_dict())
         await CollectionsHandler().append_item(item.collection_id, item)
         return HttpReponseBody(status="success", data={"item_id": item_id})
+
+    async def get(self, item_id: str) -> Item:
+        return await es_adapter.get(self.INDEX_NAME, item_id)
+

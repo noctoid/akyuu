@@ -14,9 +14,8 @@ class CollectionsHandler:
     INDEX_NAME = "collections_"
 
     async def create(self, collection: Collection) -> HttpReponseBody:
-        es_doc = collection.to_dict()
         collection_id = await es_adapter.create(
-            index=self.INDEX_NAME, id=collection.id, document=es_doc)
+            index=self.INDEX_NAME, document=collection.to_dict())
         return HttpReponseBody(status="success", data={"collection_id": collection_id})
 
     async def get(self, collection_id) -> HttpReponseBody:

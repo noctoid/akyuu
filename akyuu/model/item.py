@@ -1,22 +1,17 @@
 import uuid
+import pydantic
 from typing import Optional
-from pydantic import BaseModel
+from akyuu.model.base import Base
 
 TYPE_URI_S3 = 'type_uri_s3'
 TYPE_URI_LOCAL_FS = 'type_uri_local_fs'
 
-class URI(BaseModel):
+class URI(pydantic.BaseModel):
     type: str
     location: str
 
-class Item(BaseModel):
-    id: Optional[str] = None
+class Item(Base):
     collection_id: str
     name: Optional[str] = None
     uri: Optional[URI] = None
-
-    def to_dict(self):
-        if not hasattr(self, "id") or not getattr(self, "id"):
-            self.id = uuid.uuid4().hex
-        return super(Item, self).dict()
 
